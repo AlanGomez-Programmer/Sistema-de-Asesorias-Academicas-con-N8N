@@ -1,0 +1,1317 @@
+{
+  "name": "AcademicTouring",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "9565e6e9-3d24-4a13-a727-aba071780383",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        352,
+        -640
+      ],
+      "webhookId": "c04eb947-db5f-405f-bf19-469820577328",
+      "credentials": {
+        "telegramApi": {
+          "id": "rHzLvFYl2KiVGwxv",
+          "name": "AcademicTutoringBot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "12f9ca9b-6c4c-4af9-b09b-7217cd96fe74",
+              "name": "ID",
+              "value": "={{ $json.message.from.id }}",
+              "type": "number"
+            },
+            {
+              "id": "153db4c4-f41f-4ef8-9c87-9c0ac1fee766",
+              "name": "Mensaje",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "86f19248-f6a3-4cf9-ba1a-2dae4600ec36",
+              "name": "Nombre",
+              "value": "={{ $json.message.from.first_name }} {{ $json.message.from.last_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bbb746f7-030a-48e4-8f9d-2edf4853dedc",
+      "name": "Datos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        576,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Datos').item.json.Mensaje }}",
+        "options": {
+          "systemMessage": "Eres \"AcademicTutoring\", el asistente conversacional de un sistema automatizado de gestión de tutorías académicas que opera dentro de Telegram, orquestado por n8n e integrado con una base de datos en Google Sheets llamada AcademicTutoring. Usa SIEMPRE los datos reales de las hojas de Google Sheets mediante las herramientas disponibles. Nunca inventes materias, tutores, horarios, fechas ni estados."
+        }
+      },
+      "id": "630edf8a-f3ee-4835-bd69-76e4c102c612",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        864,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "id": "4df72aa4-7ced-4bcc-930d-36a814adc8e0",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        -432
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "F7KZcgQq9E3ZmSLH",
+          "name": "LLM Gemini 3.1  Flash lite"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Datos').item.json.ID }}"
+      },
+      "id": "3948e9d4-a17d-41a1-8a45-d651c0faeb33",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        992,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "LECTURA de la hoja Tutores (ID, Nombre, Especialidad, Estado). Úsalo para listar materias/especialidades y encontrar tutores activos.",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Tutores",
+          "mode": "name",
+          "cachedResultName": "Tutores"
+        },
+        "options": {}
+      },
+      "id": "71ed7aa4-cff3-4762-ae8a-c1ec1ac0131d",
+      "name": "Tutores_Leer",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        736,
+        -960
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "LECTURA de la hoja Estudiantes (ID, DNI / DPI, Nombre Completo, NumeroTelefonico). Úsalo para verificar si un estudiante ya existe.",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1456880506,
+          "mode": "list",
+          "cachedResultName": "Estudiantes"
+        },
+        "options": {}
+      },
+      "id": "5ddfa94b-383d-4b79-b678-ac872f96c249",
+      "name": "Estudiantes_Leer",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        736,
+        -1104
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "ESCRITURA (crear o actualizar) en la hoja Estudiantes. Coincide por ID. Debes proveer ID, DNI / DPI, Nombre Completo y NumeroTelefonico.",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1456880506,
+          "mode": "list",
+          "cachedResultName": "Estudiantes"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $fromAI('ID') }}",
+            "DNI / DPI": "={{ $fromAI('DNI_DPI') }}",
+            "Nombre Completo": "={{ $fromAI('Nombre_Completo') }}",
+            "NumeroTelefonico": "={{ $fromAI('NumeroTelefonico') }}",
+            "Sesión_Usuario": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DNI / DPI",
+              "displayName": "DNI / DPI",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nombre Completo",
+              "displayName": "Nombre Completo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "NumeroTelefonico",
+              "displayName": "NumeroTelefonico",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sesión_Usuario",
+              "displayName": "Sesión_Usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "fe443ee3-f79b-4101-b882-8c04b3eeca9c",
+      "name": "Estudiantes_Escribir",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        -1104
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "LECTURA de la hoja Disponibilidad (ID, ID_Tutor, Dia_Semana, hora_inicio, hora_fin, estado). Úsalo para buscar franjas \"Libre\" de un tutor en un día.",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2030225879,
+          "mode": "list",
+          "cachedResultName": "Disponibilidad"
+        },
+        "options": {}
+      },
+      "id": "e256b5e0-e642-462e-80cd-5f4c30b64fe4",
+      "name": "Disponibilidad_Leer",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        -1104
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "ESCRITURA (actualizar) en la hoja Disponibilidad. Coincide por ID. Úsalo para marcar una franja como \"Ocupado\" o liberarla a \"Libre\".",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2030225879,
+          "mode": "list",
+          "cachedResultName": "Disponibilidad"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $fromAI('ID') }}",
+            "ID_Tutor": "={{ $fromAI('ID_Tutor') }}",
+            "Dia_Semana": "={{ $fromAI('Dia_Semana') }}",
+            "hora_inicio": "={{ $fromAI('hora_inicio') }}",
+            "hora_fin": "={{ $fromAI('hora_fin') }}",
+            "estado (LIbre/Ocupado)": "={{ $fromAI('estado') }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID_Tutor",
+              "displayName": "ID_Tutor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Dia_Semana",
+              "displayName": "Dia_Semana",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hora_inicio",
+              "displayName": "hora_inicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hora_fin",
+              "displayName": "hora_fin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado (LIbre/Ocupado)",
+              "displayName": "estado (LIbre/Ocupado)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "be01d573-6309-45f9-82d3-964080556d6a",
+      "name": "Disponibilidad_Escribir",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1296,
+        -1104
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "LECTURA de la hoja Tutorías (ID, ID_estudiante, ID_tutor, materia, fecha, hora, estado). Úsalo para consultar, verificar disponibilidad por fecha y localizar tutorías a cancelar.",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1850599902,
+          "mode": "list",
+          "cachedResultName": "Tutorias"
+        },
+        "options": {}
+      },
+      "id": "4e2a5ba5-c0fc-410e-b01b-fe961ad97970",
+      "name": "Tutorias_Leer",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        -960
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "ESCRITURA (crear o actualizar) en la hoja Tutorías. Coincide por ID. Debes proveer ID (ej. T-001), ID_estudiante, ID_tutor, materia, fecha, hora y estado.",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1850599902,
+          "mode": "list",
+          "cachedResultName": "Tutorias"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $fromAI('ID') }}",
+            "ID_estudiante": "={{ $fromAI('ID_estudiante') }}",
+            "materia": "={{ $fromAI('materia') }}",
+            "fecha": "={{ $fromAI('fecha') }}",
+            "hora": "={{ $fromAI('hora') }}",
+            "estado": "={{ $fromAI('estado') }}",
+            "ID_Tutor": "={{ $fromAI('ID_tutor') }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID_estudiante",
+              "displayName": "ID_estudiante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID_Tutor",
+              "displayName": "ID_Tutor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "materia",
+              "displayName": "materia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hora",
+              "displayName": "hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "678119a0-8b55-4d68-9c88-78e74067f111",
+      "name": "Tutorias_Escribir",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1280,
+        -944
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Guarda/actualiza el estado de sesión del usuario. Coincide por user. Debes proveer user (ID de Telegram), pantalla_actual, paso_actual y datos_parciales (texto).",
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1494116357,
+          "mode": "list",
+          "cachedResultName": "session"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user": "={{ $('Datos').item.json.ID }}",
+            "pantalla_actual": "={{ $fromAI('pantalla_actual') }}",
+            "paso_actual": "={{ $fromAI('paso_actual') }}",
+            "datos_parciales": "={{ $fromAI('datos_parciales') }}"
+          },
+          "matchingColumns": [
+            "user"
+          ],
+          "schema": [
+            {
+              "id": "user",
+              "displayName": "user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pantalla_actual",
+              "displayName": "pantalla_actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "paso_actual",
+              "displayName": "paso_actual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "datos_parciales",
+              "displayName": "datos_parciales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "c7d13aba-e42a-4c1f-a77f-ea13ef7ccf36",
+      "name": "Sesiones",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        -944
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Datos').item.json.ID }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "7379c2a5-d771-4f5e-916c-b0705d905129",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1296,
+        -640
+      ],
+      "webhookId": "b47be05a-cd00-44d7-b690-8bfd913f75c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "rHzLvFYl2KiVGwxv",
+          "name": "AcademicTutoringBot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "id": "e5fd236a-958a-485a-9fca-8f3c7c91f3be",
+      "name": "Cada dia (recordatorios)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1850599902,
+          "mode": "list",
+          "cachedResultName": "Tutorias"
+        },
+        "options": {}
+      },
+      "id": "b6613a8b-069e-44d2-b25b-44906b93e044",
+      "name": "Leer Tutorias (recordatorio)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -16,
+        16
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "387ba098-31f1-45a6-8e14-0865161d9d48",
+              "leftValue": "={{ $json.fecha }}",
+              "rightValue": "={{ $today.format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "a1b2c3d4-0001-4a11-9c22-000000000001",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "Cancelada",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "a1b2c3d4-0002-4a11-9c22-000000000002",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "Finalizada",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a4820223-f01b-4215-94ff-48f215812be9",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "70841d0b-3258-413e-a62a-0d5de0ebfc11",
+              "name": "ID_Tutoria",
+              "value": "={{ $json.ID }}",
+              "type": "string"
+            },
+            {
+              "id": "f19fd995-c0bc-42ff-9e82-bcbda962a226",
+              "name": "ID_Estudiante",
+              "value": "={{ $json.ID_estudiante }}",
+              "type": "string"
+            },
+            {
+              "id": "08808c81-309d-491c-9018-7ec6860d5574",
+              "name": "ID_Tutor",
+              "value": "={{ $json.ID_Tutor }}",
+              "type": "string"
+            },
+            {
+              "id": "2155474d-7372-4262-bae5-04992f73cf7c",
+              "name": "materia",
+              "value": "={{ $json.materia }}",
+              "type": "string"
+            },
+            {
+              "id": "d8893255-8356-4835-bf53-5b17d117ecfe",
+              "name": "Fecha",
+              "value": "={{ $json.fecha }}",
+              "type": "string"
+            },
+            {
+              "id": "78c1e92e-6dd1-4aa2-ad5a-9520bf32ec75",
+              "name": "Hora",
+              "value": "={{ $json.hora }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8f3e7b38-3933-4dee-be5e-699543b2e506",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        496,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1456880506,
+          "mode": "list",
+          "cachedResultName": "Estudiantes"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $json.ID_Estudiante }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "id": "9d674993-9beb-4663-a876-be7128e67f20",
+      "name": "Buscar Estudiante (recordatorio)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        16
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI",
+          "mode": "list",
+          "cachedResultName": "AcademicTutoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10szMugr_xsAQ7AKWgZvmqGEOyjFfj_ZthBrT8tPetHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Tutores",
+          "mode": "name",
+          "cachedResultName": "Tutores"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $('Edit Fields').item.json.ID_Tutor }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "id": "a900cd21-78f6-49de-b38a-0f2cd03a2409",
+      "name": "Buscar Tutor (recordatorio)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        944,
+        16
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0AMcXpcFk9qCai47",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=DATOS DE ESTE RECORDATORIO (úsalos tal cual, no los cambies):\nNombre del estudiante: {{ $('Buscar Estudiante (recordatorio)').item.json['Nombre Completo'] }}\nMateria: {{ $('Edit Fields').item.json.materia }}\nFecha: {{ $('Edit Fields').item.json.Fecha }}\nHora: {{ $('Edit Fields').item.json.Hora }}\nTutor: {{ $json.Nombre }}\nLa tutoría es HOY.",
+        "options": {
+          "systemMessage": "Eres el redactor de recordatorios de \"AcademicTutoring\". Tu única tarea es escribir UN mensaje de recordatorio de tutoría, cálido, amigable y con emojis, listo para enviarse por Telegram al estudiante. No conversas, no haces preguntas: solo generas el texto del mensaje.\n\nUSA ÚNICAMENTE los datos que te llegan en el mensaje del usuario (ya están resueltos y son correctos). Nunca inventes ni sustituyas el nombre del estudiante, el nombre del tutor, la materia, la fecha o la hora. No dejes placeholders visibles como \"undefined\" o \"{}\".\n\nTONO Y ESTILO:\n- Cálido, cercano y motivador; emojis moderados (📚 ⏰ 🎓 ✅ 😊 🙌 📅 🕒).\n- Dirígete al estudiante por su primer nombre.\n- Mensaje breve (3 a 6 líneas).\n\nESTRUCTURA:\n1. Saludo cálido con el nombre del estudiante.\n2. Recuérdale que HOY tiene una tutoría, mencionando la materia.\n3. Datos clave, cada uno en su línea: 📅 Fecha, 🕒 Hora, 👨‍🏫 Tutor.\n4. Cierre breve y motivador (puntualidad / preparar dudas). Opcionalmente una línea corta indicando que puede escribir al bot y usar \"Cancelar\" si necesita reprogramar.\n\nGenera SOLO el texto final del mensaje, sin explicaciones ni encabezados."
+        }
+      },
+      "id": "c80861ab-d7c4-412f-b1cb-26c9bd9bea38",
+      "name": "AI Agent1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1232,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "id": "f0413219-9f69-40c9-b25c-a5f0cd25b673",
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1232,
+        272
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "naYG9KfbbyCRGNuX",
+          "name": "LLM Gemini 3.5 Flash"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e7377d9-92b8-4834-a363-4e5b8eb194b1",
+              "name": "ID_chat",
+              "value": "={{ $('Buscar Estudiante (recordatorio)').item.json['Sesión_Usuario'] }}",
+              "type": "number"
+            },
+            {
+              "id": "c468d64a-2dcf-4ea7-8289-cb55d8fc67be",
+              "name": "Mensaje",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8ce72d5c-57bb-48da-ba1e-45e0de8fd5f7",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1680,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.ID_chat }}",
+        "text": "={{ $json.Mensaje }}",
+        "additionalFields": {}
+      },
+      "id": "dceabd27-35a5-4e24-a766-da04873ea2ac",
+      "name": "Send a text message1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1904,
+        16
+      ],
+      "webhookId": "b606a5be-ee41-49a1-a5a6-86c9ad4abe7b",
+      "credentials": {
+        "telegramApi": {
+          "id": "rHzLvFYl2KiVGwxv",
+          "name": "AcademicTutoringBot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Nodos de Lectura\n",
+        "height": 368,
+        "width": 336
+      },
+      "id": "3cbaa331-a797-46e9-9819-349237ac704f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -1168
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Nodos de Escritura\n",
+        "height": 368,
+        "width": 368
+      },
+      "id": "ac33e183-f8bb-4871-910b-d22e8a2b061f",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        -1168
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datos": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tutores_Leer": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estudiantes_Leer": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estudiantes_Escribir": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Disponibilidad_Leer": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Disponibilidad_Escribir": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tutorias_Leer": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tutorias_Escribir": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sesiones": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cada dia (recordatorios)": {
+      "main": [
+        [
+          {
+            "node": "Leer Tutorias (recordatorio)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer Tutorias (recordatorio)": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Buscar Estudiante (recordatorio)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Estudiante (recordatorio)": {
+      "main": [
+        [
+          {
+            "node": "Buscar Tutor (recordatorio)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Tutor (recordatorio)": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "611c43a4-ea69-40bc-aeda-c614a58b8472",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c39c0a6060689ff04fd284f06d9468161e657af56a0900f99877580982d1481b"
+  },
+  "nodeGroups": [],
+  "id": "6AQkwPE6LB4tdSMA",
+  "tags": []
+}
