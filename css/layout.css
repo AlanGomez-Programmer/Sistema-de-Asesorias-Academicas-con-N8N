@@ -1,0 +1,153 @@
+header {
+    width: 100vw;
+    height: 200px;
+}
+
+.header_logo {
+    width: 100%;
+    padding: 1.5rem;
+    text-align: center;
+    background-color: var(--Color-primario);
+    color: var(--Color-titulo);
+    font-family: var(--Font-principal);
+    font-size: 2rem;
+    font-style: normal;
+}
+
+.botones {
+    width: 100%;
+    margin: auto;
+    padding: 1rem;
+    background-color: var(--Color-secundario);
+    color: var(--Color-texto-botones);
+}
+
+.botones ul {
+    display: flex;
+    align-items: center;
+}
+
+.botones li {
+    width: 150px;
+    margin-left: 1rem;
+    padding: 7px;
+    border-radius: 1rem;
+    text-align: center;
+    font-weight: bold;
+    list-style: none;
+    background-color: var(--Color-terciario);
+}
+
+.botones a {
+    display: block;
+    color: var(--Color-texto-botones);
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.botones li:hover {
+    background-color: var(--Color-secundario);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+section {
+    padding: 3rem;
+    width: 100vw;
+    height: 100vh;
+}
+
+.contenedor{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contenedor-contenido {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main  {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.contenedor-contenido img{
+    width: 700px;
+    height: 700px;
+    border-radius: 3rem;
+}
+
+article {
+    width: 700px;
+    height: 700px;
+    padding: 1rem;
+}
+
+article h2 {
+    margin-top: 40px;
+    margin-bottom: 1.5rem;
+}
+
+.pregunta {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.texto {
+    margin-left: 15px;
+    margin-bottom: 10px;
+}
+
+#lista{
+    margin-left: 35px;
+}
+
+article button {
+    display: block;
+    width: 200px;
+    margin: 3rem auto 1rem auto;
+    padding: 1rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-radius: 1rem;
+    background-color: var(--Color-terciario);
+    color: var(--Color-texto-botones);
+}
+
+article button:hover {
+    background-color: var(--Color-secundario);
+    cursor: pointer;
+}
+
+.QuienesSomos {
+    width: 80%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    background-color: var(--Color-terciario);
+    border-radius: 1rem;
+    padding: 1rem;
+    color: var(--Color-titulo);
+}
+
+.QuienesSomos h1 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+footer {
+    background-color: var(--Color-primario);
+    color: var(--Color-texto-botones);
+    text-align: center;
+    padding: 1.5rem;
+    font-weight: bold;
+}

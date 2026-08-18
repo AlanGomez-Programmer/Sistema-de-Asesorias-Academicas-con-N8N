@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+/* Estilos principales */
+
+:root {
+    /* Paleta de colores */
+    --Color-primario: #0052CC;
+    --Color-secundario: #00B4D8;
+    --Color-terciario: #0A2540;
+
+    /* Fonts */
+    --Font-principal: "Black Ops One", system-ui;;
+    --Font-texto: 'Times New Roman';
+    --Color-titulo: white;
+    --Color-texto-botones: white;
+}
+
+* {
+    padding: 0%;
+    margin: 0%;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
