@@ -25,6 +25,68 @@ Se hicieron dos bloques de google sheets ya que un bloque ayuda al agente de IA 
 
 ![Nodos-ingreso-datos](./img/nodos_recordatorios.png)
 
+## 🔄 Actualizaciones
+
+1. **Horario de atención:** 
+    
+    Se agrega un nuevo nodo para que los usuarios tengan un el horario de atención. 
+    
+    - Lunes a Viernes de 08:00 AM a 06:00 PM. 
+    - Sabados y domingos en usuario puede hacer consultas sobre sus tutorias y podrá cancelar tutorias.
+
+
+**¿Qué hay de nuevo?**
+
+1. **Intregraciòn de fecha y hora en el nodo de filtro**
+
+    Para integrar esta actualización, se agrego en el filtro la fecha y la hora 
+
+    ![Fecha y hora en nodo de filtro](./img/Fecha_Hora_Nodo_Filtro.png)
+
+    En el bloque Fecha y hora se agrego el siguiene código:
+
+    ```bash
+
+        {{ $now.format('yyyy-MM-dd HH:mm a') }} // .format() indica el formate que se desa
+
+    ```
+
+2. **Se modificó el prompt**
+    
+    En el prompt del agente de IA se agrego un nuevo inciso, modificando la numerión. 
+    
+    El inciso donde se agrega el nuevo prompt es el inciso 3.
+
+    **prompt**
+    
+    ```text
+    =====================================================
+    3. Horarios de atención
+    =====================================================
+
+    **Antes de que el usuario pueda solicitar, debes de calcular estos datos**
+
+    1. Ver la fecha y la hora que se te porporciona: 
+        La fecha y la hora es la siguiente: {{ $json['Dia y hora'] }}
+
+    2. Debes calcular la fecha para saber que dia es
+    3. Si el usuario quiere hacer un registro el dia sábado y domingo.
+        Deberas indicarle que no se puede solicitar tutorias los dias
+        sábados ni domingos.
+    4. El horario de atención es de Lunes a Viernes de 08:00 AM a 06:00
+        PM.
+    5. Si se permiten la consultas de tutorias en cualquier momento
+    6. Si se permite la cancelación de la tutoria en cualquier momento
+
+    Si está fuera de horario, detener el flujo y enviar: 🌙 Coordinación Cerrada. Nuestro horario de atención es de Lunes a Viernes, 8am a 6pm. ¡Escríbenos mañana!
+
+    ** Si el usuario cumple con estos requisitos, puedes seguir el siguiene inciso **
+    ```
+
+    Se le es especifica el agente que realizar y de donde debe tomar los datos
+
+    ![Prompt_datos](./img/prompt_fecha_hora.png)
+
 
 ## Página web
 
